@@ -58,6 +58,9 @@ func main() {
 	savecsv(articles)
 	fmt.Println("Saved the CSV file.")
 
+	go startServer()
+	fmt.Println("Started the http server.")
+
 	tick := time.Tick(Config.interval)
 	for range tick {
 		articles := withinDays(fetchArticles(2), Config.days)
@@ -278,4 +281,18 @@ func tweetCount(url string) int {
 	}
 	num, _ := (result["count"]).(float64) // type assertion is necessary
 	return int(num)
+}
+
+// Web UI
+func handler(w http.ResponseWriter, r *http.Request) {
+	d, err := ioutil.ReadFile(datafile)
+	if err != nil {
+		log.Fatal(err)
+	}
+	fmt.Fprintf(w, string(d[:]))
+}
+
+func startServer() {
+	http.HandleFunc("/", handler)
+	http.ListenAndServe(":8080", nil)
 }

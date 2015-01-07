@@ -28,7 +28,6 @@ Golang twitter library:
 https://github.com/ChimeraCoder/anaconda
 
 ## Todo:
-- add web ui to view the current stats
 - add weekly / monthly top 5 tweets
 - take config file path as a command line option
 - create twitter buffer goroutine to optimize the timing
