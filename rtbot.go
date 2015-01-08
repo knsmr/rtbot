@@ -54,7 +54,7 @@ func main() {
 	client := NewTwitterClient("conf.json")
 
 	// Check and store the current stats for the first time
-	articles := withinDays(fetchArticles(2), Config.days)
+	articles := withinDays(fetchArticles(3), Config.days)
 	savecsv(articles)
 	fmt.Println("Saved the CSV file.")
 
@@ -63,7 +63,7 @@ func main() {
 
 	tick := time.Tick(Config.interval)
 	for range tick {
-		articles := withinDays(fetchArticles(2), Config.days)
+		articles := withinDays(fetchArticles(3), Config.days)
 		prevArticles := withinDays(loadcsv(), Config.days)
 		tweetedUrls := createMap(prevArticles)
 
