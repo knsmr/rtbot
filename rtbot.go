@@ -285,14 +285,23 @@ func tweetCount(url string) int {
 
 // Web UI
 func handler(w http.ResponseWriter, r *http.Request) {
-	d, err := ioutil.ReadFile(datafile)
-	if err != nil {
-		log.Fatal(err)
+	as := loadcsv()
+	fmt.Fprintf(w, "<html><body><ul>\n")
+	for _, a := range as {
+		fmt.Fprintf(w, a.htmlView())
 	}
-	fmt.Fprintf(w, string(d[:]))
+	fmt.Fprintf(w, "</ul><body><html>\n")
 }
 
 func startServer() {
 	http.HandleFunc("/", handler)
 	http.ListenAndServe(":8080", nil)
+}
+
+// article template
+func (a Article) htmlView() string {
+	d := a.published.Format("2006-01-02")
+	l := "https://twitter.com/search?f=realtime&q=" + a.url
+	s := fmt.Sprintf("<li>%v: <a href=\"%v\" target=\"_blank\">%v</a> (<a href=\"%v\" target=\"_blank\">%v</a>RT)</li>\n", d, a.url, a.title, l, a.retweet)
+	return s
 }
