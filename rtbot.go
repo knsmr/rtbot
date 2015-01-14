@@ -13,6 +13,7 @@ import (
 	"os"
 	"regexp"
 	"strconv"
+	"sync"
 	"time"
 )
 
@@ -29,6 +30,9 @@ type Article struct {
 	title     string
 	retweet   int
 }
+
+// We use this mutex to give exclusive control for savecsv / loadcsv
+var mutex = new(sync.Mutex)
 
 var Config struct {
 	// Defines the days to look back in the past
@@ -80,7 +84,7 @@ func main() {
 
 // Specify the step to count in.
 func roundDown(i int) int {
-	return (i / 50) * 50
+	return (i / 100) * 100
 }
 
 // When refered to as Rt, the number of tweets is rounded down.
@@ -99,7 +103,7 @@ func TweetWorthy(retweet int, prev int) bool {
 	p := roundDown(prev)
 	// When the retweet count surpasses 100, 150, 200, 250... and
 	// so on.
-	return r-p >= 50
+	return r-p >= 100
 }
 
 func tweet(c *anaconda.TwitterApi, msg string) {
@@ -164,11 +168,13 @@ func (a Article) csv() []string {
 }
 
 func savecsv(as []*Article) {
+	mutex.Lock()
 	file, err := os.OpenFile(datafile, os.O_CREATE|os.O_WRONLY|os.O_TRUNC, 0644)
 	if err != nil {
 		log.Fatal(err)
 	}
 	defer file.Close()
+	defer mutex.Unlock()
 
 	writer := csv.NewWriter(file)
 
@@ -184,11 +190,13 @@ func savecsv(as []*Article) {
 func loadcsv() []*Article {
 	articles := []*Article{}
 
+	mutex.Lock()
 	file, err := os.Open(datafile)
 	if err != nil {
 		log.Fatal(err)
 	}
 	defer file.Close()
+	defer mutex.Unlock()
 
 	reader := csv.NewReader(file)
 	rows, err := reader.ReadAll()
