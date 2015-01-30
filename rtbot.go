@@ -44,7 +44,7 @@ var Config struct {
 }
 
 func init() {
-	flag.IntVar(&Config.days, "d", 3, "Days to look back")
+	flag.IntVar(&Config.days, "d", 4, "Days to look back")
 	flag.DurationVar(&Config.interval, "interval", 10*time.Minute, "Polling interval")
 	flag.BoolVar(&Config.dryrun, "dry-run", false, "Dry run mode")
 	flag.Parse()

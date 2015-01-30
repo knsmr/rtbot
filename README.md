@@ -1,6 +1,6 @@
 ## rtbot.go
 
-A Twitter bot that tweets TechCrunch Japan articles that have garnered more than 100RTs and beyond. This bot checks the retweet counts for articles within three days every 10 minutes and it generates a new tweet every time an article gets additional 50RTs like so: 100, 150, 200, 250, 300...
+A Twitter bot that tweets TechCrunch Japan articles that have garnered more than 100RTs and beyond. Every ten minutes, this bot checks the retweet counts for articles within three days and generates a new tweet every time an article gets additional 10RTs like so: 100, 200, 300, 400 and so on.
 
 ~~~
 $ ./rtbot --dry-run=false -d 3 -interval=10m
@@ -30,8 +30,7 @@ https://github.com/ChimeraCoder/anaconda
 ## Todo:
 - add weekly / monthly top 5 tweets
 - take config file path as a command line option
-- create twitter buffer goroutine to optimize the timing
-- logging
+- create tweets buffer goroutine to optimize the timing of tweet
 - follow everyone who retweets or favs our tweets, and unfollow those who don't follow us back in a week
 - retweet all the tweets with an opinion added to the original tweet
 - generalize the article extraction process to use this bot for other sites
@@ -41,4 +40,3 @@ https://github.com/ChimeraCoder/anaconda
 Copyright (c) 2015 Ken Nishimura
 This software is released under the MIT License
 http://rem.mit-license.org
-
