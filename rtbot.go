@@ -109,6 +109,7 @@ func TweetWorthy(retweet int, prev int) bool {
 func tweet(c *anaconda.TwitterApi, msg string) {
 	if Config.dryrun == false {
 		v := url.Values{}
+		v.Set("utm_medium", "rtbot")
 		_, err := c.PostTweet(msg, v)
 		if err != nil {
 			fmt.Println(err)
