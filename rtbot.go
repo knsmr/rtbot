@@ -140,7 +140,7 @@ func withinDays(as []*Article, days int) []*Article {
 }
 
 func fetchArticles(pages int) []*Article {
-	var articleLink = regexp.MustCompile("<a.*river_headline.*>")
+	var articleLink = regexp.MustCompile("<li.*river-block.*data-permalink.*>")
 
 	var content []byte
 	var articles []*Article
@@ -148,7 +148,6 @@ func fetchArticles(pages int) []*Article {
 	for p := 1; p <= pages; p++ {
 		content = getPage(pageUrl(p))
 		match := articleLink.FindAll(content, -1)
-
 		for _, m := range match {
 			a := parseArticleLink(m)
 			a.retweet = tweetCount(a.url)
@@ -259,8 +258,8 @@ func getPage(url string) []byte {
 // Create an Article object with an a tag link html fragment.
 func parseArticleLink(atag []byte) *Article {
 	var articleDate = regexp.MustCompile("201[0-9]/[0-9]+/[0-9]+")
-	var articleURL = regexp.MustCompile("href=\"([^\"]+)\"")
-	var articleTitle = regexp.MustCompile("title=\"([^\"]+)\"")
+	var articleURL = regexp.MustCompile("data-permalink=\"([^\"]+)\"")
+	var articleTitle = regexp.MustCompile("data-shareTitle=\"([^\"]+)\"")
 
 	date := articleDate.Find(atag)
 	url := articleURL.FindSubmatch(atag)
