@@ -294,7 +294,9 @@ func tweetCount(url string) int {
 // Web UI
 func handler(w http.ResponseWriter, r *http.Request) {
 	as := loadcsv()
-	fmt.Fprintf(w, "<html><body><ul>\n")
+	fmt.Fprintf(w, "<html><body>\n")
+	fmt.Fprintf(w, "<a href=\"http://49.212.24.191:8081\">TechCrunch USの記事一覧はこちら</a>\n")
+	fmt.Fprintf(w, "<ul>\n")
 	for _, a := range as {
 		fmt.Fprintf(w, a.htmlView())
 	}
