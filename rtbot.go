@@ -45,7 +45,7 @@ var Config struct {
 
 func init() {
 	flag.IntVar(&Config.days, "d", 5, "Days to look back")
-	flag.DurationVar(&Config.interval, "interval", 12*time.Minute, "Polling interval")
+	flag.DurationVar(&Config.interval, "interval", 20*time.Minute, "Polling interval")
 	flag.BoolVar(&Config.dryrun, "dry-run", false, "Dry run mode")
 	flag.Parse()
 
@@ -75,7 +75,7 @@ func main() {
 			if TweetWorthy(a.retweet, tweetedUrls[a.url]) {
 				msg := fmt.Sprintf("%vRT %v %v", a.Rt(), a.title, a.url)
 				tweet(client, msg)
-				time.Sleep(time.Second * 40)
+				time.Sleep(time.Second * 60)
 			}
 		}
 		savecsv(articles)
