@@ -44,8 +44,8 @@ var Config struct {
 }
 
 func init() {
-	flag.IntVar(&Config.days, "d", 4, "Days to look back")
-	flag.DurationVar(&Config.interval, "interval", 10*time.Minute, "Polling interval")
+	flag.IntVar(&Config.days, "d", 5, "Days to look back")
+	flag.DurationVar(&Config.interval, "interval", 12*time.Minute, "Polling interval")
 	flag.BoolVar(&Config.dryrun, "dry-run", false, "Dry run mode")
 	flag.Parse()
 
@@ -75,7 +75,7 @@ func main() {
 			if TweetWorthy(a.retweet, tweetedUrls[a.url]) {
 				msg := fmt.Sprintf("%vRT %v %v", a.Rt(), a.title, a.url)
 				tweet(client, msg)
-				time.Sleep(time.Second * 15)
+				time.Sleep(time.Second * 40)
 			}
 		}
 		savecsv(articles)
@@ -84,7 +84,7 @@ func main() {
 
 // Specify the step to count in.
 func roundDown(i int) int {
-	return (i / 100) * 100
+	return (i / 50) * 50
 }
 
 // When refered to as Rt, the number of tweets is rounded down.
@@ -95,15 +95,11 @@ func (a Article) Rt() int {
 // tweetWorthy determines if the article should be tweeted. prev is
 // the number of tweets at the previous fetch.
 func TweetWorthy(retweet int, prev int) bool {
-	// Anything less than 100RT is not worth it, yet.
-	if retweet < 100 {
-		return false
-	}
 	r := roundDown(retweet)
 	p := roundDown(prev)
 	// When the retweet count surpasses 100, 150, 200, 250... and
 	// so on.
-	return r-p >= 100
+	return r-p >= 50
 }
 
 func tweet(c *anaconda.TwitterApi, msg string) {
