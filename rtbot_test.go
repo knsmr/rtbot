@@ -27,10 +27,10 @@ func Test_TweetWorthy(t *testing.T) {
 	}{
 		{[2]int{0, 0}, false},
 		{[2]int{10, 3}, false},
-		{[2]int{50, 0}, true},
+		{[2]int{50, 10}, true},
 		{[2]int{50, 50}, false},
-		{[2]int{99, 0}, true},
-		{[2]int{100, 0}, true},
+		{[2]int{99, 10}, true},
+		{[2]int{100, 10}, true},
 		{[2]int{100, 100}, false},
 		{[2]int{103, 98}, true},
 		{[2]int{153, 148}, true},
@@ -45,6 +45,8 @@ func Test_TweetWorthy(t *testing.T) {
 		{[2]int{405, 232}, true},
 		{[2]int{455, 448}, true},
 		{[2]int{455, 450}, false},
+		{[2]int{450, 0}, false},
+		{[2]int{51, 0}, false},
 	}
 	for _, c := range cases {
 		got := TweetWorthy(c.in[0], c.in[1])

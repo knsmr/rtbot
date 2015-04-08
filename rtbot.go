@@ -95,6 +95,10 @@ func (a Article) Rt() int {
 // tweetWorthy determines if the article should be tweeted. prev is
 // the number of tweets at the previous fetch.
 func TweetWorthy(retweet int, prev int) bool {
+	if prev == 0 {
+		return false
+	}
+
 	r := roundDown(retweet)
 	p := roundDown(prev)
 	// When the retweet count surpasses 100, 150, 200, 250... and
@@ -270,12 +274,14 @@ func parseArticleLink(atag []byte) *Article {
 func tweetCount(url string) int {
 	res, err := http.Get(retweetAPI + url)
 	if err != nil {
+		return 0
 		log.Fatal(err)
 	}
 	defer res.Body.Close()
 
 	content, err := ioutil.ReadAll(res.Body)
 	if err != nil {
+		return 0
 		log.Fatal(err)
 	}
 
