@@ -317,8 +317,10 @@ func (a Article) htmlView() string {
 	s := fmt.Sprintf("<li>%v: <a href=\"%v\" target=\"_blank\">%v</a> (<a href=\"%v\" target=\"_blank\">%v</a>RT)</li>\n", d, a.url, a.title, l, a.retweet)
 
 	r := a.retweet
-	if r >= 100 && r < 200 {
-		s = fmt.Sprintf("<div style=\"background-color: #fcc\">%v</div>", s)
+	if r >= 50 && r < 100 {
+		s = fmt.Sprintf("<div style=\"background-color: #fdd\">%v</div>", s)
+	} else if r >= 100 && r < 200 {
+		s = fmt.Sprintf("<div style=\"background-color: #fbb\">%v</div>", s)
 	} else if r >= 200 && r < 300 {
 		s = fmt.Sprintf("<div style=\"background-color: #f99\">%v</div>", s)
 	} else if r >= 300 && r < 400 {
@@ -326,6 +328,5 @@ func (a Article) htmlView() string {
 	} else if r >= 400 {
 		s = fmt.Sprintf("<div style=\"background-color: #f55\">%v</div>", s)
 	}
-
 	return s
 }
