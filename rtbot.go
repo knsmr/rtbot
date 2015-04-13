@@ -55,7 +55,7 @@ func init() {
 }
 
 func main() {
-	client := NewTwitterClient("conf.json")
+	tweetBuffer := NewTwitterBuffer("conf.json")
 
 	// Check and store the current stats for the first time
 	articles := withinDays(fetchArticles(3), Config.days)
@@ -74,8 +74,7 @@ func main() {
 		for _, a := range articles {
 			if TweetWorthy(a.retweet, tweetedUrls[a.url]) {
 				msg := fmt.Sprintf("%vRT %v %v", a.Rt(), a.title, a.url)
-				tweet(client, msg)
-				time.Sleep(time.Second * 60)
+				tweetBuffer <- msg
 			}
 		}
 		savecsv(articles)
@@ -104,18 +103,6 @@ func TweetWorthy(retweet int, prev int) bool {
 	// When the retweet count surpasses 100, 150, 200, 250... and
 	// so on.
 	return r-p >= 50
-}
-
-func tweet(c *anaconda.TwitterApi, msg string) {
-	if Config.dryrun == false {
-		v := url.Values{}
-		v.Set("utm_medium", "rtbot")
-		_, err := c.PostTweet(msg, v)
-		if err != nil {
-			fmt.Println(err)
-		}
-	}
-	fmt.Println(msg)
 }
 
 func createMap(as []*Article) map[string]int {
@@ -215,7 +202,9 @@ func loadcsv() []*Article {
 
 // Initialize the twitter api client with Anaconda lib. Specify the
 // config file.
-func NewTwitterClient(filename string) *anaconda.TwitterApi {
+func NewTwitterBuffer(filename string) chan string {
+	buff := make(chan string, 100)
+
 	conf, err := os.Open(filename)
 	if err != nil {
 		log.Fatal(err)
@@ -229,7 +218,24 @@ func NewTwitterClient(filename string) *anaconda.TwitterApi {
 	anaconda.SetConsumerKey(keys["consumerkey"])
 	anaconda.SetConsumerSecret(keys["consumersecret"])
 	c := anaconda.NewTwitterApi(keys["accesstoken"], keys["tokensecret"])
-	return c
+
+	go func() {
+		var msg string
+		for {
+			msg = <- buff
+			if Config.dryrun == false {
+				v := url.Values{}
+				_, err := c.PostTweet(msg, v)
+				if err != nil {
+					fmt.Println(err)
+				}
+			}
+			fmt.Println(msg)
+			time.Sleep(time.Second*60)
+		}
+	}()
+
+	return buff
 }
 
 func pageUrl(n int) string {
