@@ -21,7 +21,7 @@ const (
 	// This Twitter API is actually an unofficial endpoint. We
 	// should use the Streaming API instead.
 	retweetAPI string = "http://urls.api.twitter.com/1/urls/count.json?url="
-	datafile string = "articles.csv"
+	datafile string = "articles-test.csv"
 )
 
 type Article struct {
