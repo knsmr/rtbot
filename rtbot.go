@@ -55,7 +55,7 @@ func init() {
 }
 
 func main() {
-	tweetBuffer := NewTwitterBuffer("conf.test-account")
+	tweetBuffer := NewTwitterBuffer("conf.json")
 
 	// Check and store the current stats for the first time
 	articles := withinDays(fetchArticles(3), Config.days)
@@ -313,7 +313,7 @@ func handler(w http.ResponseWriter, r *http.Request) {
 
 func startServer() {
 	http.HandleFunc("/", handler)
-	http.ListenAndServe(":8082", nil)
+	http.ListenAndServe(":8080", nil)
 }
 
 // article template
